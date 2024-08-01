@@ -354,8 +354,6 @@ class Key(Part):
         return plate
 
 
-
-
 class KeyFactory(object):
 
     NONE_KEY = Key("none", None)
@@ -372,7 +370,7 @@ class KeyFactory(object):
     WALL_KEYS = None
 
     @staticmethod
-    def get_key_by_id(key_id: str) -> Key:
+    def t_key_by_id(key_id: str) -> Key:
         if key_id not in KeyFactory.KEYS_BY_ID.keys():
             return KeyFactory.KEYS_BY_ID["none"]
         return KeyFactory.KEYS_BY_ID[key_id]
