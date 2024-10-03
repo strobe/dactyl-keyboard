@@ -66,13 +66,13 @@
     -85, -32, 38
   ],
   "right_encoder_wall_rotation": [
-    58, -5, 1
+    55, -5, 1
   ],
   "left_encoder_wall_offset": [
-    -85, -32, 38
+    -85, -33.5, 38
   ],
   "left_encoder_wall_rotation": [
-    55, -5, 1
+     53, -5, 1
   ],
   "tbiw_encoder_wall_offset": [
     -85, 0.5, 42.5
