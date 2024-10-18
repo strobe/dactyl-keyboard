@@ -2522,11 +2522,11 @@ def make_dactyl():
         return rest
 
     # NEEDS TO BE SPECIAL FOR CADQUERY
-    def baseplate(shape, wedge_angle=None, side='right'):
+    def baseplate(walls, wedge_angle=None, side='right'):
         global logo_file
         if ENGINE == 'cadquery':
             # shape = mod_r
-            shape = union([shape, *screw_insert_outers(side=side)])
+            shape = union([walls, *screw_insert_outers(side=side)])
             # tool = translate(screw_insert_screw_holes(side=side), [0, 0, -10])
             if magnet_bottom:
                 tool = screw_insert_all_shapes(screw_hole_diameter / 2., screw_hole_diameter / 2., 2.1, side=side)
@@ -2690,7 +2690,7 @@ def make_dactyl():
                                        external_start[1] + external_holder_yoffset + 7.5,
                                        external_holder_height / 2 - 10.5
                                    ))
-                # shape = difference(shape, [controller_shape])
+                holder = difference(holder, [walls])
                 shape = union([shape, holder])
             if magnet_bottom:
                 shape = difference(shape, [translate(magnet, (0, 0, 0.05 - (screw_insert_height / 2))) for magnet in list(tool)])
