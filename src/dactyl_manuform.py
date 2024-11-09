@@ -2820,7 +2820,7 @@ def make_dactyl():
             # inner_plate = cq.Workplane('XY').add(cq.Face.makeFromWires(inner_wire))
             if wedge_angle is not None:
                 cq.Workplane('XY').add(cq.Solid.revolve(outerWire, innerWires, angleDegrees, axisStart, axisEnd))
-            else:
+            elif not mounting_plate:
                 inner_shape = cq.Workplane('XY').add(
                     cq.Solid.extrudeLinear(inner_wire, [], cq.Vector(0, 0, base_thickness)))
                 inner_shape = translate(inner_shape, (0, 0, -base_rim_thickness))
@@ -2865,33 +2865,6 @@ def make_dactyl():
                 shape = difference(shape, hole_shapes)
                 shape = translate(shape, (0, 0, -base_rim_thickness))
                 shape = union([shape, inner_shape])
-
-                # LATEST PUCK STUFF
-                # if has_puck:
-                #     height = 6.0
-                #     mount = (
-                #         wp()
-                #         .circle(20)
-                #         .workplane(offset=height)
-                #         .circle(12)
-                #         .loft(combine=True)
-                #     )
-                #
-                #     screw = cq.importers.importStep(
-                #         os.path.abspath(os.path.join(r"src", "parts", "quarter_inch_screw.step"))).translate([0, 0, -9])
-                #
-                #     mid_row = int(np.floor(nrows / 2))
-                #
-                #     pos = key_position([0, 0, 0], 0, mid_row)
-                #     pos[2] = -base_rim_thickness
-                #     pos[0] += (ncols * 6)
-                #     mount = translate(mount, pos)
-                #     screw = translate(screw, pos)
-                #     cut = translate(cylinder(10, 5), pos)
-                #
-                #     shape = difference(shape, [cut])
-                #     shape = union([shape, mount])
-                #     shape = difference(shape, [screw])
 
                 if has_puck:
                     top_inside_key = key_position([0, 0, 0], 0, 0)
@@ -2968,6 +2941,61 @@ def make_dactyl():
                 # export_file(shape=rest, fname=path.join(save_path, config_name + r"_right_wrist_rest"))
                 if magnet_bottom:
                     shape = difference(shape, [translate(magnet, (0, 0, 0.05 - (screw_insert_height / 2))) for magnet in list(tool)])
+
+            else: # MOUNTING PLATE
+                # LATEST PUCK STUFF
+
+                inner_shape = cq.Workplane('XY').add(
+                    cq.Solid.extrudeLinear(inner_wire, [], cq.Vector(0, 0, base_rim_thickness)))
+                inner_shape = translate(inner_shape, (0, 0, -base_rim_thickness))
+                if block_bottoms:
+                    inner_shape = blockerize(inner_shape)
+
+                holes = []
+                for i in range(len(base_wires)):
+                    if i not in [inner_index, outer_index]:
+                        holes.append(base_wires[i])
+                cutout = [*holes, inner_wire]
+
+                shape = cq.Workplane('XY').add(
+                    cq.Solid.extrudeLinear(outer_wire, cutout, cq.Vector(0, 0, base_rim_thickness)))
+                hole_shapes = []
+                for hole in holes:
+                    loc = hole.Center()
+                    hole_shapes.append(
+                        translate(
+                            cylinder(screw_cbore_diameter / 2.0, screw_cbore_depth),
+                            (loc.x, loc.y, 0)
+                            # (loc.x, loc.y, screw_cbore_depth/2)
+                        )
+                    )
+                shape = difference(shape, hole_shapes)
+                shape = translate(shape, (0, 0, -base_rim_thickness))
+                shape = union([shape, inner_shape])
+                height = base_rim_thickness
+                # mount = (
+                #     wp()
+                #     .circle(20)
+                #     .workplane(offset=height)
+                #     .circle(12)
+                #     .loft(combine=True)
+                # )
+
+                screw = cylinder(2.69, 20)
+
+                mid_row = int(np.floor(nrows / 2))
+
+                pos = key_position([0, 0, 0], 0, mid_row)
+                pos[2] = -base_rim_thickness
+                pos[0] += (ncols * 6)
+                # mount = translate(mount, pos)
+                screw = translate(screw, pos)
+                # cut = translate(cylinder(10, 5), pos)
+
+                # shape = difference(shape, [cut])
+                # shape = union([shape, mount])
+                shape = difference(shape, [screw])
+
 
             return shape
         else:
