@@ -7,6 +7,12 @@ from key import Key, KeyFactory as KF
 from common import *
 from trackball import TrackballPart
 
+keys = [
+        ["MX", "MX", "MX", "MX"],
+        ["MX", None, None, "MX"],
+        ["MX", None, None, "MX"],
+        ["MX", "MX", "MX", "MX"]
+    ]
 
 class KeypadCluster(TrackballOrbyl):
     @staticmethod
@@ -19,7 +25,7 @@ class KeypadCluster(TrackballOrbyl):
         for item in parent_locals:
             globals()[item] = parent_locals[item]
         self.is_tb = True
-        self.build_key_matrix()
+        self.build_cluster_keys()
 
     def track_place(self, shape, offsets=(0, 0, 0)):
         pos, rot = self.position_rotation()
@@ -28,169 +34,94 @@ class KeypadCluster(TrackballOrbyl):
         shape = translate(shape, pos)
         return shape
 
-    def build_key_matrix(self):
-        # trackball = TrackballPart(self.locals)
-        # KF.add_part(trackball)
-        key = None
-        prev_key = None
-        origin = [0, 0, 0]
-        vert_off = keyswitch_height + 7
-        horiz_off = keyswitch_width + 7
-        off_x = 5
-        top_y = -10
+    def build_cluster_keys(self):
 
-        # trackball.pos = self.thumborigin()
+        vert_off = keyswitch_height + 8
+        horiz_off = keyswitch_width + 8
 
-        c_pos, c_rot = self.position_rotation()
+        c_pos, _ = self.position_rotation()
+        c_rot = [5, 5, 5]
+        c_pos[0] -= 32
+        c_pos[1] += 32
 
-        # trackball.update_pos_rot(c_pos, c_rot)
-
-        z_inc = 5
-
-        for r in range(1):
-            for c in range(2, 4):
-                key = KF.NONE_KEY
-                if r < 3:
-                    if c > 1:
-                        key = KF.new_key(KF.get_rc_id(r, c), self.locals)
-                elif r == 3:
-                    key = KF.new_key(KF.get_rc_id(r, c), self.locals)
-
-                if not key.is_none():
-                    key.pos = [horiz_off * c, -vert_off * r, 0]
+        for row in range(len(keys)):
+            for col in range(len(keys[row])):
+                val = keys[row][col]
+                if val is not None:
+                    key = KF.new_key_by_row_column(row, col, self.locals)
+                    key.pos = [horiz_off * col, -vert_off * row, 0]
                     key.update_pos_rot(c_pos, c_rot)
+                    keys[row][col] = key
+                else:
+                    keys[row][col] = KF.NONE_KEY
 
-        key_0_2 = KF.get_key_by_row_col(0, 2)
-        key_0_3 = KF.get_key_by_row_col(0, 3)
-        # key_1_2 = KF.get_key_by_row_col(1, 2)
-        # key_1_3 = KF.get_key_by_row_col(1, 3)
-        # key_2_0 = KF.get_key_by_row_col(2, 0)
-        # key_2_1 = KF.get_key_by_row_col(2, 1)
-        # key_2_2 = KF.get_key_by_row_col(2, 2)
-        # key_2_3 = KF.get_key_by_row_col(2, 3)
+        KF.build_neighbors(keys)
 
-        # trackball.add_neighbor(key_0_2, "tr")
-        # key_0_2.add_neighbor(trackball, "bl")
-        key_0_2.add_neighbor(key_0_3, "r")
-        # key_0_2.add_neighbor(key_1_2, "b")
-        # key_0_2.add_neighbor(key_1_3, "br")
-
-        key_0_3.add_neighbor(key_0_2, "l")
-        # key_0_3.add_neighbor(key_1_2, "bl")
-        # key_0_3.add_neighbor(key_1_3, "b")
-        key_0_3.add_neighbor("wall", "r")
-
-        # trackball.add_neighbor(key_1_2, "r")
-        # key_1_2.add_neighbor(trackball, "l")
-        # key_1_2.add_neighbor(key_0_2, "t")
-        # key_1_2.add_neighbor(key_0_3, "tr")
-        # key_1_2.add_neighbor(key_1_3, "r")
-        # key_1_2.add_neighbor(key_2_3, "br")
-        # key_1_2.add_neighbor(key_2_2, "b")
-        # key_1_2.add_neighbor(key_2_1, "bl")
-        #
-        # key_1_3.add_neighbor(key_0_2, "tl")
-        # key_1_3.add_neighbor(key_0_3, "t")
-        # key_1_3.add_neighbor("wall", "r")
-        # key_1_3.add_neighbor(key_1_2, "l")
-        # key_1_3.add_neighbor(key_2_3, "b")
-        # key_1_3.add_neighbor(key_2_2, "bl")
-        #
-        # # trackball.add_neighbor(key_0_2, "br")
-        # # key_0_2.add_neighbor(trackball, "tl")
-        # key_2_0.add_neighbor("wall", "l")
-        # key_2_0.add_neighbor("outer_corner", "bl")
-        # key_2_0.add_neighbor("wall", "b")
-        # key_2_0.add_neighbor(key_2_1, "r")
-        #
-        # # trackball.add_neighbor(key_2_1, "b")
-        # # key_2_1.add_neighbor(trackball, "t")
-        # key_2_1.add_neighbor(key_2_0, "l")
-        # key_2_1.add_neighbor("wall", "b")
-        # key_2_1.add_neighbor(key_2_2, "l")
-        # key_2_1.add_neighbor(key_1_2, "tl")
-        #
-        # # trackball.add_neighbor(key_2_2, "br")
-        # # key_2_2.add_neighbor(trackball, "tl")
-        # key_2_2.add_neighbor(key_1_2, "t")
-        # key_2_2.add_neighbor(key_1_3, "tr")
-        # key_2_2.add_neighbor(key_2_3, "r")
-        # key_2_2.add_neighbor("wall", "b")
-        # key_2_2.add_neighbor(key_2_1, "l")
-        #
-        # key_2_3.add_neighbor(key_1_2, "tr")
-        # key_2_3.add_neighbor(key_1_3, "t")
-        # key_2_3.add_neighbor("wall", "r")
-        # key_2_3.add_neighbor("outer_corner", "br")
-        # key_2_3.add_neighbor("wall", "b")
-        # key_2_3.add_neighbor(key_2_2, "r")
-
-    def build_keys(self):
-
-        origin = [0, 0, 0]
-        vert_off = keyswitch_height + 7
-        horiz_off = keyswitch_width + 7
-        off_x = 5
-        top_y = -10
-
-        c_pos, c_rot = self.position_rotation()
-
-        z_inc = 5
-        last_key = None
-        for i in range(3):
-            key = KF.new_key(str(i), self.locals)
-            off_y = top_y - (vert_off * i)
-            key.pos = (origin[0] + off_x, origin[1] + off_y, 0)
-            key.rot = (20, 0, 10)
-            key.add_wall("right")
-
-            key.update_pos_rot(c_pos, c_rot)
-
-            if last_key is not None:
-                key.add_neighbor(last_key.get_id(), "t")
-                key.add_neighbor("wall", "r")
-                last_key.add_neighbor(key.get_id(), "b")
-
-            if i == 2:
-                key.add_neighbor("wall", "b")
-                key.add_neighbor("corner", "br")
-
-            last_key = key
-
-        off_y = top_y - (2 * vert_off)
-        left_most_x = off_x - (3 * horiz_off)
-
-        for i in range(3):
-            key = KF.new_key(str(i + 3), self.locals)
-            off_x = left_most_x + (i * horiz_off)
-            key.pos = (origin[0] + off_x, origin[1] + off_y, 0)
-            key.rot = (20, 0, 10)
-            key.add_neighbor("wall", "b")
-            if i == 0:
-                key.add_neighbor("wall", "l")
-
-            last_key = add_neighbor(key, last_key)
-            key.update_pos_rot(c_pos, c_rot)
-
-        height = 2 * z_inc
-        off_x = left_most_x + (2 * horiz_off)
-        off_y += vert_off
-        for i in range(2):
-            key = KF.new_key(str(i + 6), self.locals)
-            off_y = off_y + (vert_off * i)
-            key.pos = (origin[0] + off_x, origin[1] + off_y, 0)
-            key.rot = (20, 0, 10)
-            key.add_wall("left")
-            last_key = add_neighbor(key, last_key)
-            key.update_pos_rot(c_pos, c_rot)
+    # def build_keys(self):
+    #     origin = [0, 0, 0]
+    #     vert_off = keyswitch_height + 7
+    #     horiz_off = keyswitch_width + 7
+    #     off_x = 5
+    #     top_y = -10
+    #
+    #     c_pos, c_rot = self.position_rotation()
+    #
+    #     z_inc = 5
+    #     last_key = None
+    #     for i in range(3):
+    #         key = KF.new_key(str(i), self.locals)
+    #         off_y = top_y - (vert_off * i)
+    #         key.pos = (origin[0] + off_x, origin[1] + off_y, 0)
+    #         key.rot = (20, 0, 10)
+    #         key.add_wall("right")
+    #
+    #         key.update_pos_rot(c_pos, c_rot)
+    #
+    #         if last_key is not None:
+    #             key.add_neighbor(last_key.get_id(), "t")
+    #             key.add_neighbor("wall", "r")
+    #             last_key.add_neighbor(key.get_id(), "b")
+    #
+    #         if i == 2:
+    #             key.add_neighbor("wall", "b")
+    #             key.add_neighbor("corner", "br")
+    #
+    #         last_key = key
+    #
+    #     off_y = top_y - (2 * vert_off)
+    #     left_most_x = off_x - (3 * horiz_off)
+    #
+    #     for i in range(3):
+    #         key = KF.new_key(str(i + 3), self.locals)
+    #         off_x = left_most_x + (i * horiz_off)
+    #         key.pos = (origin[0] + off_x, origin[1] + off_y, 0)
+    #         key.rot = (20, 0, 10)
+    #         key.add_neighbor("wall", "b")
+    #         if i == 0:
+    #             key.add_neighbor("wall", "l")
+    #
+    #         last_key = add_neighbor(key, last_key)
+    #         key.update_pos_rot(c_pos, c_rot)
+    #
+    #     height = 2 * z_inc
+    #     off_x = left_most_x + (2 * horiz_off)
+    #     off_y += vert_off
+    #     for i in range(2):
+    #         key = KF.new_key(str(i + 6), self.locals)
+    #         off_y = off_y + (vert_off * i)
+    #         key.pos = (origin[0] + off_x, origin[1] + off_y, 0)
+    #         key.rot = (20, 0, 10)
+    #         key.add_wall("left")
+    #         last_key = add_neighbor(key, last_key)
+    #         key.update_pos_rot(c_pos, c_rot)
 
     def thumbcaps(self, side="right"):
         return self.thumb_1x_layout(sa_cap(1), True)
 
     def thumb_1x_layout(self, shape, cap=False):
         shapes = []
-        for r in range(4):
-            for c in range(4):
+        for r in range(len(keys)):
+            for c in range(len(keys[r])):
                 key = KF.get_key_by_id(KF.get_rc_id(r, c))
                 if not key.is_none():
                     shapes.append(key.render(None, cap))
@@ -216,31 +147,26 @@ class KeypadCluster(TrackballOrbyl):
 
     def get_points(self, part1, side1, part2, side2):
         side_points = {
-            "t": ["tl", "t", "tr"],
-            "b": ["bl", "b", "br"],
-            "l": ["tl", "l", "bl"],
-            "r": ["tr", "r", "br"],
-            "tl": ["t", "tl", "l"],
-            "bl": ["b", "bl", "l"],
-            "tr": ["t", "tr", "r"],
-            "br": ["b", "br", "r"]
+            "t": ["tl", "tr"],
+            "b": ["bl", "br"],
+            "l": ["tl", "bl"],
+            "r": ["tr", "br"],
+            "tl": ["tl"],
+            "bl": ["bl"],
+            "tr": ["tr"],
+            "br": ["br"]
         }
 
-        sp1 = side_points[side1]
-        sp2 = side_points[side2]
+        sp1 = [part1.get_point_at(x, off=(0, 0, 3)) for x in side_points[side1]]
+        sp2 = [part2.get_point_at(x, off=(0, 0, 3)) for x in side_points[side2]]
 
         return [
-            hull_from_points([
-                part1.get_point_at(sp1[0]),
-                part2.get_point_at(sp2[1]),
-                part1.get_point_at(sp1[2])
-            ]),
+            hull_from_points(sp1 + sp2),
             # hull_from_points([
             #     part2.get_point_at(sp2[0]),
             #     part1.get_point_at(sp1[1]),
             #     part2.get_point_at(sp2[2])
             # ])
-
         ]
 
     def get_connection(self, part, side, neighb):
@@ -252,8 +178,8 @@ class KeypadCluster(TrackballOrbyl):
     def thumb_connectors(self, side="right"):
         processed = {}
         hulls = []
-        for r in range(4):
-            for c in range(4):
+        for r in range(len(keys)):
+            for c in range(len(keys[r])):
                 key = KF.get_key_by_row_col(r, c)
                 if key.get_id() not in processed.keys():
                     processed[key.get_id()] = []
@@ -277,6 +203,9 @@ class KeypadCluster(TrackballOrbyl):
                             hulls = hulls + points
                             processed[neighb.get_id()].append(neighb_side)
                             processed[key.get_id()].append(side)
+        # spheres = []
+        # for point in hulls:
+        #     spheres.append(translate(sphere(2), point))
 
         return union(hulls)
 

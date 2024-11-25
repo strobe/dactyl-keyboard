@@ -427,3 +427,30 @@ class KeyFactory(object):
 
         return cls.new_key(cls.get_rc_id(row, col), parent_locals, key_type=key_type, hole_type=hole_type)
 
+    @classmethod
+    def build_neighbors(cls, keys):
+        for row in range(len(keys)):
+            for col in range(len(keys[row])):
+                key = keys[row][col]
+                if not key.is_none():
+                    if col > 0:
+                        left = keys[row][col - 1]
+                        if not left.is_none():
+                            key.add_neighbor(left, "l")
+                            left.add_neighbor(key, "r")
+                        if row > 0:
+                            top_left = keys[row - 1][col - 1]
+                            if not top_left.is_none():
+                                key.add_neighbor(top_left, "tl")
+                                top_left.add_neighbor(key, "br")
+                            if col < len(keys[row - 1]) - 1:
+                                top_right = keys[row - 1][col + 1]
+                                if not top_right.is_none():
+                                    key.add_neighbor(top_right, "tr")
+                                    top_right.add_neighbor(key, "bl")
+                    if row > 0:
+                        top = keys[row - 1][col]
+                        if not top.is_none():
+                            key.add_neighbor(top, "t")
+                            top.add_neighbor(key, "b")
+

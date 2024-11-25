@@ -74,7 +74,7 @@ class Part(object):
         return self.pos
 
     def offset_point(self, offsets):
-        calc_offsets = rotate_rad(offsets, self.rot)
+        calc_offsets = rotate_deg(offsets, self.rot)
         return [calc_offsets[i] + self.pos[i] for i in range(len(self._pos))]
 
     def add_neighbor(self, neighbor, side):

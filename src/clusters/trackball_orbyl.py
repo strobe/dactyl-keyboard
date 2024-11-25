@@ -65,7 +65,7 @@ class TrackballOrbyl(DefaultCluster):
         return "TRACKBALL_ORBYL"
 
     def get_config(self):
-        with open(os.path.join("src", "clusters", "json", "TRACKBALL_ORBYL.json"), mode='r') as fid:
+        with open(os.path.join("src", "clusters", "json", "KEYPAD_CLUSTER.json"), mode='r') as fid:
             data = json.load(fid)
 
         superdata = super().get_config()
@@ -90,8 +90,9 @@ class TrackballOrbyl(DefaultCluster):
             globals()[item] = parent_locals[item]
 
     def position_rotation(self):
-        rot = [10, -15, 5]
+        # rot = [10, -15, 5]
         pos = self.thumborigin()
+        rot = [0, 0, 0]
         # Changes size based on key diameter around ball, shifting off of the top left cluster key.
         shift = [-.9 * self.key_diameter/2 + 27 - 42, -.1 * self.key_diameter / 2 + 3 - 20, -5]
         for i in range(len(pos)):
