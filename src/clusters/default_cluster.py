@@ -2,7 +2,14 @@ import json
 import os
 from key import Key, KeyFactory
 from geom import *
-from clusters.cluster_common import *
+# from clusters.cluster_common import *
+
+MR = "mr"
+TR = "tr"
+BR = "br"
+ML = "ml"
+TL = "tl"
+BL = "bl"
 
 
 class DefaultCluster(object):

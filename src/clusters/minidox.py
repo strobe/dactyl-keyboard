@@ -1,7 +1,7 @@
 from clusters.default_cluster import DefaultCluster
 import os
 import json
-from clusters.cluster_common import *
+# from clusters.cluster_common import *
 
 
 class MinidoxCluster(DefaultCluster):

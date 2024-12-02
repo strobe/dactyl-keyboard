@@ -1068,7 +1068,7 @@ def make_dactyl():
     def is_cq():
         return ENGINE == "cadquery"
 
-    def pcb_backer_old(side='right'):
+    def pcb_backer(side='right'):
         pcb_calculated_center = (flex_depth + flex_holder_thickness) / 2
         pcb_offset = (plate_thickness / 2) + pcb_calculated_center
         hotswap_offset = pcb_offset + hotswap_depth
@@ -1173,7 +1173,7 @@ def make_dactyl():
 
         return shape
 
-    def pcb_backer(side='right'):
+    def pcb_backer_new(side='right'):
         pcb_calculated_center = (flex_depth + flex_holder_thickness) / 2
         pcb_offset = (plate_thickness / 2) + pcb_calculated_center
         hotswap_offset = pcb_offset + hotswap_depth
@@ -1199,7 +1199,7 @@ def make_dactyl():
         def smooth(shape):
             if is_cq():
                 # shape = shape.edges("|Z").fillet(2)
-                shape = shape.edges(">Z").chamfer(1)
+                shape = shape.edges(">Z").chamfer(0.5)
 
             return shape
 
@@ -1789,6 +1789,31 @@ def make_dactyl():
     #     store_bottom_pts = False
     #     return result
 
+    all_merged = locals().copy()
+    for item in globals():
+        all_merged[item] = globals()[item]
+
+    def key_placements(side="right"):
+        print('key_holes()')
+        # hole = single_plate()
+
+        r = []
+        none_key = KeyFactory.NONE_KEY
+        for row in range(nrows):
+            c = []
+            for column in range(ncols):
+                if valid_key(column, row):
+                    key = KeyFactory.new_key_by_row_column(row, column, all_merged)
+                    key.calculate_key_placement(column, row, column_style=column_style)
+                    c.append(key)
+                else:
+                    c.append(none_key)
+            r.append(c)
+
+        KeyFactory.build_matrix()
+        # return KeyFactory.MATRIX
+
+    key_placements(side="right")
 
     rj9_start = list(
         np.array([0, -3, 0])
@@ -3059,31 +3084,31 @@ def make_dactyl():
             # export_file(shape=union((oled_clip_mount_frame()[1], oled_clip())),
             #             fname=path.join(save_path, config_name + r"_oled_clip_assy_test"))
 
-    all_merged = locals().copy()
-    for item in globals():
-        all_merged[item] = globals()[item]
+    # all_merged = locals().copy()
+    # for item in globals():
+    #     all_merged[item] = globals()[item]
 
-    def key_placements(side="right"):
-        print('key_holes()')
-        # hole = single_plate()
-
-        r = []
-        none_key = KeyFactory.NONE_KEY
-        for row in range(nrows):
-            c = []
-            for column in range(ncols):
-                if valid_key(column, row):
-                    key = KeyFactory.new_key_by_row_column(row, column, all_merged)
-                    key.calculate_key_placement(column, row, column_style=column_style)
-                    c.append(key)
-                else:
-                    c.append(none_key)
-            r.append(c)
-
-        KeyFactory.build_matrix()
-        # return KeyFactory.MATRIX
-
-    key_placements(side="right")
+    # def key_placements(side="right"):
+    #     print('key_holes()')
+    #     # hole = single_plate()
+    #
+    #     r = []
+    #     none_key = KeyFactory.NONE_KEY
+    #     for row in range(nrows):
+    #         c = []
+    #         for column in range(ncols):
+    #             if valid_key(column, row):
+    #                 key = KeyFactory.new_key_by_row_column(row, column, all_merged)
+    #                 key.calculate_key_placement(column, row, column_style=column_style)
+    #                 c.append(key)
+    #             else:
+    #                 c.append(none_key)
+    #         r.append(c)
+    #
+    #     KeyFactory.build_matrix()
+    #     # return KeyFactory.MATRIX
+    #
+    # key_placements(side="right")
 
     def rj9_cube():
         debugprint('rj9_cube()')

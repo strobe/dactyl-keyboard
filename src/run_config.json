@@ -9,6 +9,7 @@
   "show_caps": false,
   "show_pcbs": false,
   "resin": false,
+  "tilt_resin": true,
   "nrows": 6,
   "ncols": 6,
   "alpha": 0.26179916666666664,
@@ -28,6 +29,7 @@
   "thumb_style": "TRACKBALL_WILD",
   "right_side_only": false,
   "default_1U_cluster": true,
+  "oled_left_wall_x_offset_override": 32.0,
   "trackball_in_wall": false,
   "tbiw_ball_center_row": 0.2,
   "tbiw_translational_offset": [
@@ -107,6 +109,7 @@
     -20.0
   ],
   "has_btus": false,
+  "ceramic": false,
   "tb_btu_socket_rotation_offset": [
     0,
     0,
@@ -174,6 +177,9 @@
   "nub_keyswitch_width": 14.4,
   "undercut_keyswitch_height": 14.0,
   "undercut_keyswitch_width": 14.0,
+  "choc_keyswitch_height": 13.9,
+  "choc_keyswitch_width": 13.9,
+  "plate_chamfer": 0.6,
   "notch_width": 5.0,
   "sa_profile_key_height": 12.7,
   "sa_length": 18.5,
