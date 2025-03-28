@@ -1824,7 +1824,8 @@ def make_dactyl():
             shape = translate(shape, (0, 0, 1.2))
 
         if not btus and not ceramic:
-            cutter = union([cutter, import_file(senscut_file)])
+            cutter = union([cutter, translate(import_file(senscut_file), (0, 0, -42.884)) ] )
+            #cutter = union([cutter, import_file(senscut_file)])
 
         # return shape, cutter
         return shape, cutter, sensor

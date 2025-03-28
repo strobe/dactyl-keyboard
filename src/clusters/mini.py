@@ -38,6 +38,7 @@ class MiniCluster(DefaultCluster):
         # debugprint('thumborigin()')
         origin = super().thumborigin()
         origin[2] = origin[2] - 4
+        origin[0] = origin[0] - 2
         return origin
 
     def tl_place(self, shape):

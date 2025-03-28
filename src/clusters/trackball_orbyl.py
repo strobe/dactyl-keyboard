@@ -101,6 +101,8 @@ class TrackballOrbyl(DefaultCluster):
     def position_rotation(self):
         rot = [10, -15, 5]
         pos = self.thumborigin()
+        pos[0] = pos[0] - 4
+        pos[2] = pos[2] - 8
         # Changes size based on key diameter around ball, shifting off of the top left cluster key.
         shift = [-.9 * self.key_diameter/2 + 27 - 42, -.1 * self.key_diameter / 2 + 3 - 20, -5]
         for i in range(len(pos)):
@@ -108,6 +110,8 @@ class TrackballOrbyl(DefaultCluster):
 
         for i in range(len(rot)):
             rot[i] = rot[i] + self.rotation_offset[i]
+
+        rot[1] = rot[1] - 2
 
         return pos, rot
 
@@ -128,7 +132,8 @@ class TrackballOrbyl(DefaultCluster):
         t_off = self.key_translation_offsets[0]
         shape = rotate(shape, self.key_rotation_offsets[0])
         shape = translate(shape, (t_off[0], t_off[1] + self.key_diameter / 2, t_off[2]))
-        shape = rotate(shape, [0,0,-80])
+        shape = rotate(shape, [0,0,-86])
+        shape = translate(shape, [0,4,0])
         shape = self.track_place(shape)
 
         return shape
@@ -138,7 +143,8 @@ class TrackballOrbyl(DefaultCluster):
         shape = rotate(shape, self.key_rotation_offsets[1])
         t_off = self.key_translation_offsets[1]
         shape = translate(shape, (t_off[0], t_off[1] + self.key_diameter/2, t_off[2]))
-        shape = rotate(shape, [0,0,-130])
+        shape = rotate(shape, [0,0,-120])
+        shape = translate(shape, [0,0,0])
         shape = self.track_place(shape)
 
         return shape
@@ -148,7 +154,8 @@ class TrackballOrbyl(DefaultCluster):
         shape = rotate(shape, self.key_rotation_offsets[2])
         t_off = self.key_translation_offsets[2]
         shape = translate(shape, (t_off[0], t_off[1]+self.key_diameter/2, t_off[2]))
-        shape = rotate(shape, [0,0,-180])
+        shape = translate(shape, [0,0,0])
+        shape = rotate(shape, [0,0,-162])
         shape = self.track_place(shape)
 
         return shape
@@ -159,7 +166,8 @@ class TrackballOrbyl(DefaultCluster):
         shape = rotate(shape, self.key_rotation_offsets[3])
         t_off = self.key_translation_offsets[3]
         shape = translate(shape, (t_off[0], t_off[1]+self.key_diameter/2, t_off[2]))
-        shape = rotate(shape, [0,0,-230])
+        shape = translate(shape, [0,0,0])
+        shape = rotate(shape, [0,0,-204])
         shape = self.track_place(shape)
 
         return shape
